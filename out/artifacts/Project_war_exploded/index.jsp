@@ -53,7 +53,7 @@
       <h4>Register already ! Enough with your bullshit omg ResidentSleeper</h4>
 
       <!-- register form -->
-      <form method="post" action="Login">
+      <form method="post" action="Register">
         <div class="form-group">
           <input class="form-control" type="text" name="username" placeholder="Username">
         </div>

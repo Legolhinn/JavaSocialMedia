@@ -8,15 +8,16 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.*;
 
-public class Login extends HttpServlet
+public class Register extends HttpServlet
 {
     protected void doPost( HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
         String user = request.getParameter("username");
         String pass = request.getParameter("password");
+        String email = request.getParameter("email");
         try
         {
-            String url = checkUser(user,pass);
+            String url = registerUser(user,pass,email);
             if (url != null)
             {
                 RequestDispatcher rd = getServletContext().getRequestDispatcher(url);
@@ -26,7 +27,7 @@ public class Login extends HttpServlet
 
     }
 
-    String checkUser(String _user, String _pass) throws  Exception
+    String registerUser(String _user, String _pass, String _email) throws  Exception
     {
         Class.forName("com.mysql.cj.jdbc.Driver");
 
@@ -39,23 +40,14 @@ public class Login extends HttpServlet
         try
         {
             Connection connection = DriverManager.getConnection(url, user, password);
+            String query = " insert into users (Username, Email, Password)"
+                         + " values (?, ?, ?)";
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setString (1, _user);
+            statement.setString (2, _email);
+            statement.setString (3, _pass);
 
-            String sql = "SELECT * FROM users";
-            PreparedStatement statement = connection.prepareStatement(sql);
-
-            ResultSet result = statement.executeQuery();
-            if (result.next())
-            {
-                System.out.println(_user + " = " + result.getString(2)+ " | "+_pass+" = "+result.getString(4));
-                if (result.getString(2).equals(_user))
-                {
-                    if (result.getString(4).equals(_pass))
-                    {
-                        System.out.print("4n4n");
-                        return "/home.jsp";
-                    }
-                }
-            }
+            statement.executeUpdate();
             connection.close();
         } catch (SQLException ex) { ex.printStackTrace(); }
 

@@ -8,6 +8,7 @@
           <element id="module-output" name="Project" />
         </element>
       </element>
+      <element id="library" level="application" name="mysql-connector-java-8.0.11" />
     </root>
   </artifact>
 </component>
