@@ -5,11 +5,14 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.*;
 
 public class Login extends HttpServlet
 {
+    String msg = "";
+
     protected void doPost( HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
         String user = request.getParameter("username");
@@ -20,10 +23,16 @@ public class Login extends HttpServlet
             if (url != null)
             {
                 RequestDispatcher rd = getServletContext().getRequestDispatcher(url);
+                if (!msg.equals(""))
+                {
+                    request.setAttribute("Message",msg);
+                }
+                response.setContentType("text/html");
+                HttpSession session = request.getSession(true);
+                session.setAttribute("User", new User(user, pass));
                 rd.forward(request, response);
             }
         }catch (Exception e){System.out.print(e);}
-
     }
 
     String checkUser(String _user, String _pass) throws  Exception
@@ -34,29 +43,38 @@ public class Login extends HttpServlet
         String user = "root";
         String password = "123123";
 
-        String filePath = "D:/Photos/Tom.jpg";
-
         try
         {
             Connection connection = DriverManager.getConnection(url, user, password);
 
             String sql = "SELECT * FROM users";
             PreparedStatement statement = connection.prepareStatement(sql);
-
+            boolean tf = true;
             ResultSet result = statement.executeQuery();
-            if (result.next())
+            while (result.next())
             {
-                System.out.println(_user + " = " + result.getString(2)+ " | "+_pass+" = "+result.getString(4));
+                System.out.println(result.getString(2) + " " + _user + " | " + result.getString(4) + " " + _pass);
                 if (result.getString(2).equals(_user))
                 {
                     if (result.getString(4).equals(_pass))
                     {
-                        System.out.print("4n4n");
-                        return "/home.jsp";
+                        tf = true;
                     }
+                }
+                else
+                {
+                    tf = false;
                 }
             }
             connection.close();
+            if (tf)
+                return "/home.jsp";
+            else
+            {
+                msg = "Wrong username or password";
+                return  "/index.jsp";
+            }
+
         } catch (SQLException ex) { ex.printStackTrace(); }
 
         return null;

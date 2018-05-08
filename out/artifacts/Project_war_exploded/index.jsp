@@ -15,6 +15,15 @@
   <link rel="stylesheet" type="text/css" href="css/style.css">
 </head>
 <body>
+<%@ page import="Main.User" %>
+<%
+  User user =(User)session.getAttribute("User");
+  String redirectURL = "http://localhost:8080/home.jsp";
+  if(user != null) {
+    response.sendRedirect(redirectURL);
+  }
+%>
+
 <!-- nav -->
 <nav class="navbar navbar-default">
   <div class="container-fluid">
@@ -43,9 +52,19 @@
           <input class="form-control" type="password" name="password" placeholder="Password">
         </div>
 
+        <input type="checkbox" name="remember" value="Remember"> Remember me<br><br>
         <div class="form-group">
+
           <input class="btn btn-primary" type="submit" name="login" value="Login">
         </div>
+
+        <br>
+        <%
+          String msg = (String)request.getAttribute("Message");
+          if (msg == null)
+              msg = "";
+         %>
+        <%=(String) msg%>
       </form>
       <!-- ./login form -->
     </div>
