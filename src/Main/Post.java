@@ -5,26 +5,34 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
-public class Register extends HttpServlet
+public class Post extends HttpServlet
 {
+
+    HttpSession session;
     protected void doPost( HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
-        String user = request.getParameter("username");
-        String pass = request.getParameter("password");
-        String email = request.getParameter("email");
+        String postContent = request.getParameter("content");
+        session = request.getSession();
+        User user = (User)session.getAttribute("User");
         try
         {
-            registerUser(user,pass,email);
-            RequestDispatcher rd = getServletContext().getRequestDispatcher("/index.jsp");
+            doPosting(postContent, user, request);
+            RequestDispatcher rd = getServletContext().getRequestDispatcher("/home.jsp");
             rd.forward(request, response);
         }catch (Exception e){System.out.print(e);}
 
     }
 
-    void registerUser(String _user, String _pass, String _email) throws  Exception
+    void doPosting(String _post, User _user, HttpServletRequest request) throws  Exception
     {
         Class.forName("com.mysql.cj.jdbc.Driver");
 
@@ -35,15 +43,16 @@ public class Register extends HttpServlet
         try
         {
             Connection connection = DriverManager.getConnection(url, user, password);
-            String query = " insert into users (Username, Email, Password)" + " values (?, ?, ?)";
+            String query = " insert into posttable (PostContent, UserID, DateAndTime)" + " values (?, ?, ?)";
             PreparedStatement statement = connection.prepareStatement(query);
-            statement.setString (1, _user);
-            statement.setString (2, _email);
-            statement.setString (3, _pass);
-
+            statement.setString (1, _post);
+            statement.setInt (2, _user.getUserID());
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+            LocalDateTime now = LocalDateTime.now();
+            statement.setString(3, dtf.format(now));
             statement.executeUpdate();
+            _user.showPosts(request);
             connection.close();
         } catch (SQLException ex) { ex.printStackTrace(); }
     }
 }
-

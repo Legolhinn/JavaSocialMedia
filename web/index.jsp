@@ -98,7 +98,7 @@
 <!-- footer -->
 <footer class="container text-center">
   <ul class="nav nav-pills pull-right">
-    <li>Feysbuk clone made by Duşakabir</li>
+    <li>Feysbuk clone made by Emre Aydın</li>
   </ul>
 </footer>
 <!-- ./footer -->
