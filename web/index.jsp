@@ -28,7 +28,7 @@
 <nav class="navbar navbar-default">
   <div class="container-fluid">
     <div class="navbar-header">
-      <a class="navbar-brand" href="index.html">FEYSBUK</a>
+      <a class="navbar-brand" href="index.jsp">FEYSBUK</a>
     </div>
   </div>
 </nav>
@@ -98,7 +98,7 @@
 <!-- footer -->
 <footer class="container text-center">
   <ul class="nav nav-pills pull-right">
-    <li>Feysbuk clone made by Duşakabir</li>
+    <li>Made by Emre Aydın</li>
   </ul>
 </footer>
 <!-- ./footer -->
